@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>A6API mock marketplace</title>
+    <style>
+      body { margin: 0; padding: 40px; font: 14px/1.5 Inter, system-ui, sans-serif; background: #f5f0e7; color: #28231c; }
+      h1 { font-size: 20px; }
+      table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e4dbcd; border-radius: 12px; overflow: hidden; }
+      th, td { padding: 12px 14px; border-bottom: 1px solid #ece5d9; text-align: left; vertical-align: middle; }
+      th { color: #8c8376; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; }
+      .model-name-text { font-weight: 650; }
+      .chip-channel { display: inline-flex; padding: 3px 7px; border: 1px solid #e4dbcd; border-radius: 999px; color: #8a7f70; font-size: 10px; }
+      .mp-model-check-cell { display: flex; align-items: center; }
+      .mp-pelican-view-btn { border: 1px solid #e4dbcd; border-radius: 8px; background: #fff; padding: 5px 10px; color: #857a6b; font: 600 11px/1 Inter, system-ui, sans-serif; }
+      .supplier { color: #8f8679; font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <h1>Mock A6API marketplace</h1>
+    <p class="supplier">Rows below mimic the selectors used by a6api.vip.</p>
+    <table>
+      <thead>
+        <tr><th>Model</th><th>Channel</th><th>Model check</th></tr>
+      </thead>
+      <tbody>
+        <tr data-market-row="1001">
+          <td><span class="model-name-text" title="gpt-test">gpt-test</span></td>
+          <td><span class="chip-channel">#11</span></td>
+          <td data-col="modelCheck"><div class="mp-model-check-cell"><button class="mp-pelican-view-btn" type="button">Pelican</button></div></td>
+        </tr>
+        <tr data-market-row="1002">
+          <td><span class="model-name-text" title="claude-test">claude-test</span></td>
+          <td><span class="chip-channel">#12</span></td>
+          <td data-col="modelCheck"><div class="mp-model-check-cell"><button class="mp-pelican-view-btn" type="button">Pelican</button></div></td>
+        </tr>
+      </tbody>
+    </table>
+    <script>
+      fetch("/api/marketplace/channels/search?page=1&pageSize=20")
+        .then((response) => response.json())
+        .catch(() => {});
+    </script>
+  </body>
+</html>

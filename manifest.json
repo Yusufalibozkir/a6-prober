@@ -1,0 +1,54 @@
+{
+  "manifest_version": 3,
+  "name": "A6 Prober",
+  "version": "1.2.0",
+  "description": "Probe detection for A6API channels: BazaarLink-style artifacts, Pelicans tests, Candy Detection, custom probes and scorecards.",
+  "permissions": ["storage", "unlimitedStorage"],
+  "host_permissions": [
+    "https://a6api.vip/*",
+    "https://www.a6api.vip/*",
+    "https://a6api.com/*",
+    "https://www.a6api.com/*",
+    "https://api.a6api.vip/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "action": {
+    "default_title": "A6 Prober: settings and history"
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://a6api.vip/*",
+        "https://www.a6api.vip/*",
+        "https://a6api.com/*",
+        "https://www.a6api.com/*"
+      ],
+      "js": ["src/page-hook.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://a6api.vip/*",
+        "https://www.a6api.vip/*",
+        "https://a6api.com/*",
+        "https://www.a6api.com/*"
+      ],
+      "js": ["src/lib.js", "src/api.js", "src/probes.js", "src/content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "minimum_chrome_version": "111"
+}

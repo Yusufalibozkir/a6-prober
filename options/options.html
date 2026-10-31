@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>A6 Prober · Settings</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <header class="page-head">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 3h6" />
+            <path d="M10 3v6L5.2 18.1A2 2 0 0 0 6.9 21h10.2a2 2 0 0 0 1.7-2.9L14 9V3" />
+            <path d="M7.2 15h9.6" />
+          </svg>
+        </div>
+        <div>
+          <h1>A6 Prober</h1>
+          <p>Probe detection for A6API marketplace channels.</p>
+        </div>
+      </div>
+      <a class="head-btn" href="https://a6api.vip/" target="_blank" rel="noreferrer">
+        Open marketplace
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14 4h6v6" />
+          <path d="m20 4-9 9" />
+          <path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5" />
+        </svg>
+      </a>
+    </header>
+
+    <main class="page">
+      <section class="card" aria-labelledby="connectionTitle">
+        <div class="card-head">
+          <div>
+            <h2 id="connectionTitle">Connection</h2>
+            <p>Use the token already logged in to A6API, or save a key locally as a fallback.</p>
+          </div>
+          <span class="status-dot" id="connectionStatus">local only</span>
+        </div>
+
+        <div class="mode-grid" role="radiogroup" aria-label="Token mode">
+          <label class="mode-option">
+            <input type="radio" name="tokenMode" value="auto" />
+            <span class="mode-copy">
+              <strong>Automatic token</strong>
+              <span>Reads the token list from your A6API session when the probe panel opens. The key stays in memory.</span>
+            </span>
+            <span class="mode-badge">recommended</span>
+          </label>
+          <label class="mode-option">
+            <input type="radio" name="tokenMode" value="manual" />
+            <span class="mode-copy">
+              <strong>Manual API key</strong>
+              <span>Use a key stored in this extension. Useful when you are not logged in to the marketplace.</span>
+            </span>
+          </label>
+        </div>
+
+        <div class="field" id="keyField">
+          <label for="apiKey">Manual API key</label>
+          <div class="key-row">
+            <input id="apiKey" type="password" autocomplete="off" spellcheck="false" placeholder="sk-…" />
+            <button type="button" class="ghost-btn" id="toggleKey">Show</button>
+          </div>
+          <p class="hint">Stored with <code>chrome.storage.local</code>. Never sent anywhere except the A6API gateway. Auto-detected token keys are not stored.</p>
+        </div>
+
+        <div class="card-actions">
+          <button type="button" class="primary-btn" id="saveConnection">Save connection</button>
+          <span class="save-note" id="connectionNote"></span>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="defaultsTitle">
+        <div class="card-head">
+          <div>
+            <h2 id="defaultsTitle">Probe defaults</h2>
+            <p>These apply to new runs. The preset probes also have their own output limits.</p>
+          </div>
+        </div>
+
+        <div class="defaults-grid">
+          <label class="field compact">
+            <span>Timeout</span>
+            <div class="input-affix">
+              <input id="timeoutSec" type="number" min="30" max="900" step="10" />
+              <span>sec</span>
+            </div>
+          </label>
+          <label class="field compact">
+            <span>Max output tokens</span>
+            <div class="input-affix">
+              <input id="maxTokens" type="number" min="256" max="131072" step="512" />
+              <span>tokens</span>
+            </div>
+          </label>
+          <label class="field compact">
+            <span>History records</span>
+            <div class="input-affix">
+              <input id="historyLimit" type="number" min="10" max="500" step="10" />
+              <span>runs</span>
+            </div>
+          </label>
+        </div>
+
+        <label class="switch-row">
+          <input id="stream" type="checkbox" />
+          <span class="switch" aria-hidden="true"></span>
+          <span class="switch-copy">
+            <strong>Prefer streaming</strong>
+            <span>Show tokens as they arrive. If the channel rejects SSE, Prober retries once without stream.</span>
+          </span>
+        </label>
+
+        <div class="card-actions">
+          <button type="button" class="primary-btn" id="saveDefaults">Save defaults</button>
+          <span class="save-note" id="defaultsNote"></span>
+        </div>
+      </section>
+
+      <section class="card history-card" aria-labelledby="historyTitle">
+        <div class="card-head history-head">
+          <div>
+            <h2 id="historyTitle">Run history</h2>
+            <p>Local results from your probes. File contents are capped so history cannot grow without bound.</p>
+          </div>
+          <div class="history-toolbar">
+            <select id="historyFilter" class="select-control" aria-label="Filter history by probe">
+              <option value="all">All probes</option>
+              <option value="flight">BazaarLink probe</option>
+              <option value="pelican">Pelicans Test</option>
+              <option value="candy">Candy Detection</option>
+              <option value="pelican-lite">Pelicans Test - Simplified Version</option>
+              <option value="quick">Quick probe</option>
+              <option value="custom">Custom test</option>
+            </select>
+            <input id="historySearch" class="search-control" type="search" placeholder="Search model, channel, supplier…" aria-label="Search history" />
+            <button type="button" class="ghost-btn" id="exportHistory">Export</button>
+            <button type="button" class="danger-btn" id="clearHistory">Clear</button>
+          </div>
+        </div>
+        <div id="historyList" class="history-list"></div>
+        <div id="historyEmpty" class="empty-state hidden">
+          <div class="empty-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 7h16" />
+              <path d="M6.5 7l.8 13h9.4l.8-13" />
+              <path d="M9 7V4h6v3" />
+            </svg>
+          </div>
+          <h3>No runs yet</h3>
+          <p>Open the A6API marketplace, click <strong>Probe</strong> on a channel row, and run a test.</p>
+        </div>
+      </section>
+
+      <section class="note-card">
+        <strong>What the score means</strong>
+        <p>
+          The badge is a local heuristic built from artifact validity, subject cues, detail, latency and stream behavior. It is a
+          useful signal, not proof of model identity. A poor score can also come from a bad prompt response, a truncated stream or a
+          channel that does not support tools. Always confirm billing and model claims with the provider.
+        </p>
+      </section>
+    </main>
+
+    <footer class="page-foot">
+      <span>A6 Prober <span id="version"></span> · runs locally in your browser</span>
+      <span>No telemetry. No external servers.</span>
+    </footer>
+
+    <div class="modal hidden" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+      <div class="modal-backdrop" data-close-modal></div>
+      <div class="modal-card">
+        <header class="modal-head">
+          <div>
+            <h2 id="detailTitle">Run detail</h2>
+            <p id="detailSubtitle"></p>
+          </div>
+          <button type="button" class="icon-btn" data-close-modal aria-label="Close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
+        </header>
+        <div class="modal-body" id="detailBody"></div>
+      </div>
+    </div>
+
+    <script src="../src/lib.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>
