@@ -202,6 +202,41 @@ async function main() {
   assert.match(detail, /Artifacts/i);
   await options.screenshot({ path: path.join(__dirname, "options-detail-screenshot.png") });
 
+  await options.locator('#detailModal [data-close-modal][aria-label="Close"]').click();
+  await options.locator('input[name="tokenMode"][value="manual"]').check();
+  await options.locator("#apiKey").fill("sk-design-test");
+  await options.locator("#toggleKey").click();
+  assert.equal(await options.locator("#apiKey").getAttribute("type"), "text");
+  await options.locator("#saveConnection").click();
+  await waitForText(options, options.locator("#connectionNote"), "saved");
+  await options.locator('input[name="tokenMode"][value="auto"]').check();
+  await options.locator("#saveConnection").click();
+  await options.locator("#saveDefaults").click();
+  await waitForText(options, options.locator("#defaultsNote"), "saved");
+
+  await options.locator("#historyLimit").focus();
+  await options.keyboard.press("Tab");
+  assert.equal(await options.locator("#stream").evaluate((el) => el === document.activeElement), true);
+  assert.notEqual(await options.locator(".switch").evaluate((el) => getComputedStyle(el).outlineStyle), "none", "streaming switch has a visible keyboard focus indicator");
+  await page.locator('.a6p-tab[data-probe="pelican-lite"]').click();
+  for (const width of [360, 390, 768, 1024, 1440]) {
+    await options.setViewportSize({ width, height: 900 });
+    assert.equal(await options.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `options overflow at ${width}px`);
+    await page.setViewportSize({ width, height: 900 });
+    assert.equal(await modal.evaluate((el) => el.scrollWidth <= el.clientWidth), true, `probe panel overflow at ${width}px`);
+    assert.equal(await page.locator(".a6p-composer").evaluate((el) => el.scrollWidth <= el.clientWidth), true, `composer overflow at ${width}px`);
+    assert.equal(await page.locator(".a6p-topbar").evaluate((el) => el.scrollWidth <= el.clientWidth), true, `probe header overflow at ${width}px`);
+    assert.equal(await page.locator(".a6p-intro").evaluate((el) => el.scrollWidth <= el.clientWidth), true, `probe intro overflow at ${width}px`);
+    await options.locator(".history-item .detail-btn").first().click();
+    assert.equal(await options.locator(".modal-card").evaluate((el) => el.scrollWidth <= el.clientWidth), true, `history detail overflow at ${width}px`);
+    await options.locator('#detailModal [data-close-modal][aria-label="Close"]').click();
+  }
+
+  await options.locator("#historySearch").fill("no-matching-model-for-design-test");
+  await waitForText(options, options.locator("#historyEmpty"), "No matching runs");
+  await options.locator("#historySearch").fill("");
+  assert.equal(await options.locator(".history-item").count(), historyCount);
+
   assert.deepEqual(pageErrors, [], `page errors: ${pageErrors.join("\n")}`);
   assert.deepEqual(optionErrors, [], `options errors: ${optionErrors.join("\n")}`);
 

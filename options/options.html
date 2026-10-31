@@ -17,7 +17,7 @@
           </svg>
         </div>
         <div>
-          <h1>A6 Prober</h1>
+          <p class="brand-name">A6 Prober</p>
           <p>Probe detection for A6API marketplace channels.</p>
         </div>
       </div>
@@ -32,9 +32,16 @@
     </header>
 
     <main class="page">
-      <section class="card" aria-labelledby="connectionTitle">
+      <header class="page-intro">
+        <p class="eyebrow">Your probe workspace</p>
+        <h1>Settings</h1>
+        <p>Connect to A6API, fine-tune your probes, and revisit the results. Your settings and run history stay in this browser.</p>
+      </header>
+
+      <section class="card connection-card" aria-labelledby="connectionTitle">
         <div class="card-head">
           <div>
+            <p class="eyebrow">01 / Access</p>
             <h2 id="connectionTitle">Connection</h2>
             <p>Use the token already logged in to A6API, or save a key locally as a fallback.</p>
           </div>
@@ -70,13 +77,14 @@
 
         <div class="card-actions">
           <button type="button" class="primary-btn" id="saveConnection">Save connection</button>
-          <span class="save-note" id="connectionNote"></span>
+          <span class="save-note" id="connectionNote" role="status"></span>
         </div>
       </section>
 
-      <section class="card" aria-labelledby="defaultsTitle">
+      <section class="card defaults-card" aria-labelledby="defaultsTitle">
         <div class="card-head">
           <div>
+            <p class="eyebrow">02 / Preferences</p>
             <h2 id="defaultsTitle">Probe defaults</h2>
             <p>These apply to new runs. The preset probes also have their own output limits.</p>
           </div>
@@ -117,13 +125,14 @@
 
         <div class="card-actions">
           <button type="button" class="primary-btn" id="saveDefaults">Save defaults</button>
-          <span class="save-note" id="defaultsNote"></span>
+          <span class="save-note" id="defaultsNote" role="status"></span>
         </div>
       </section>
 
       <section class="card history-card" aria-labelledby="historyTitle">
         <div class="card-head history-head">
           <div>
+            <p class="eyebrow">03 / Activity</p>
             <h2 id="historyTitle">Run history</h2>
             <p>Local results from your probes. File contents are capped so history cannot grow without bound.</p>
           </div>
@@ -156,8 +165,8 @@
         </div>
       </section>
 
-      <section class="note-card">
-        <strong>What the score means</strong>
+      <section class="note-card" aria-labelledby="scoreNoteTitle">
+        <h2 id="scoreNoteTitle">What the score means</h2>
         <p>
           The badge is a local heuristic built from artifact validity, subject cues, detail, latency and stream behavior. It is a
           useful signal, not proof of model identity. A poor score can also come from a bad prompt response, a truncated stream or a
